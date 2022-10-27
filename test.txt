@@ -1,0 +1,17 @@
+8 15
+4 1
+dizengoff
+1200
+0
+2 3
+bugrachov
+750
+0
+1 6
+bar-kochva
+500
+1
+0 12
+hayarkon
+800
+1
