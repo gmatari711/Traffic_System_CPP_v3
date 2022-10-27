@@ -44,19 +44,24 @@ bool Cell::isEmptyCell() const
     return !(this->m_horizontal || this->m_vertical);
 }
 
-bool Cell::isHorizontalStreet()
+bool Cell::isHorizontalStreet()const
 {
     return this->m_horizontal && !this->m_vertical;
 }
 
-bool Cell::isVerticalStreet()
+bool Cell::isVerticalStreet()const
 {
     return this->m_vertical && !this->m_horizontal;
 }
 
-bool Cell::isJunction()
+bool Cell::isJunction()const
 {
     return this->m_vertical && this->m_horizontal;
+}
+
+void Cell::addTrafficLight()
+{
+    this->m_traffic_light = new TrafficLight();
 }
 
 const TrafficLight* Cell::getTrafficLight() const

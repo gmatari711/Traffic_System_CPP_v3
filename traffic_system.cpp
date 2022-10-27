@@ -68,6 +68,10 @@ void TrafficSystem::setHorizontalStreetToTable(int a_x_coord, int a_y_coord, con
     for(size_t i = a_x_coord ; i < a_x_coord + a_street->getStreetLength()/100 ; ++i)
     {
         this->m_traffic_table[a_y_coord][i].setHorizontalStreet(a_street);
+        if (this->m_traffic_table[a_y_coord][i].isJunction())
+        {
+            this->m_traffic_table[a_y_coord][i].addTrafficLight();
+        }
     }
 }
 
@@ -76,14 +80,19 @@ void TrafficSystem::setVerticalStreetToTable(int a_x_coord, int a_y_coord, const
     for(size_t i = a_y_coord ; i < a_y_coord + a_street->getStreetLength()/100 ; ++i)
     {
         this->m_traffic_table[i][a_x_coord].setVerticalStreet(a_street);
+        if (this->m_traffic_table[i][a_x_coord].isJunction())
+        {
+            this->m_traffic_table[i][a_x_coord].addTrafficLight();
+        }
     }
+
 }
 
 
 
 bool TrafficSystem::isCellJunction(const Cell &a_cell)
 {
-    return a_cell.getHorizontalStreet() && a_cell.getVerticalStreet();
+    return a_cell.isJunction();
 }
 
 
@@ -225,6 +234,7 @@ void TrafficSystem::printBottomJunction(int a_x_coord, int a_y_coord)const
 
 void TrafficSystem::showTrafficSystem()
 {
+    this->roads_mutex.lock();
     SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE),{0,0});
     //Print traffic system layout.
     for(size_t i = 0 ; i < this->m_length ; ++i)
@@ -236,6 +246,7 @@ void TrafficSystem::showTrafficSystem()
     {
         std::cout<<e<<std::endl;
     }
+    this->roads_mutex.unlock();
 
 }
 
@@ -380,7 +391,7 @@ void TrafficSystem::printVerticalStreetBottom(const Cell &a_cell) {
 
 bool TrafficSystem::isMovementPossible(const Car &a_car) const
 {
-    bool result;
+    bool result = false;
     switch(a_car.getDirection())
     {
         case DriveDirection::up:
@@ -414,7 +425,7 @@ bool TrafficSystem::canMoveLeft(const Car &a_car) const
         }
         else
         {
-            result = this->m_traffic_table[a_car.getY() - 1][a_car.getX()].getTrafficLight()->getTrafficLightStatus(Exit::left);
+            result = this->m_traffic_table[a_car.getY()][a_car.getX() - 1].getTrafficLight()->getTrafficLightStatus(Exit::right);
         }
     }
 
@@ -436,7 +447,7 @@ bool TrafficSystem::canMoveRight(const Car &a_car) const
         }
         else
         {
-            result = this->m_traffic_table[a_car.getY() - 1][a_car.getX()].getTrafficLight()->getTrafficLightStatus(Exit::right);
+            result = this->m_traffic_table[a_car.getY()][a_car.getX() + 1].getTrafficLight()->getTrafficLightStatus(Exit::left);
         }
     }
 
@@ -458,7 +469,7 @@ bool TrafficSystem::canMoveUp(const Car &a_car) const
         }
         else
         {
-            result = this->m_traffic_table[a_car.getY() - 1][a_car.getX()].getTrafficLight()->getTrafficLightStatus(Exit::up);
+            result = this->m_traffic_table[a_car.getY() - 1][a_car.getX()].getTrafficLight()->getTrafficLightStatus(Exit::down);
         }
     }
 
@@ -480,7 +491,7 @@ bool TrafficSystem::canMoveDown(const Car &a_car) const
         }
         else
         {
-            result = this->m_traffic_table[a_car.getY() - 1][a_car.getX()].getTrafficLight()->getTrafficLightStatus(Exit::down);
+            result = this->m_traffic_table[a_car.getY() + 1][a_car.getX()].getTrafficLight()->getTrafficLightStatus(Exit::up);
         }
     }
 
@@ -538,19 +549,33 @@ bool TrafficSystem::isOutOfRoad(const Car& a_car) const
     {
         result = true;
     }
-    else if (a_car.getDirection() == DriveDirection::up || a_car.getDirection() == DriveDirection::down)
+    else if (!this->m_traffic_table[a_car.getY()][a_car.getX()].isJunction())
     {
-        if (!this->m_traffic_table[a_car.getY()][a_car.getX()].isVerticalStreet())
+        if (a_car.getDirection() == DriveDirection::up || a_car.getDirection() == DriveDirection::down)
+        {
+            if (!this->m_traffic_table[a_car.getY()][a_car.getX()].isVerticalStreet())
+            {
+                result = true;
+            }
+        }
+        else if (!this->m_traffic_table[a_car.getY()][a_car.getX()].isHorizontalStreet())
         {
             result = true;
         }
-    }
-    else if (!this->m_traffic_table[a_car.getY()][a_car.getX()].isHorizontalStreet())
-    {
-        result = true;
+
     }
 
     return result;
+}
+
+void TrafficSystem::updateCarPosOnRoadMap(const Car& a_car)
+{
+    this->m_traffic_table[a_car.getY()][a_car.getX()].setCar(&a_car);
+}
+
+void TrafficSystem::removeCarFromRoadMap(const Car& a_car)
+{
+    this->m_traffic_table[a_car.getY()][a_car.getX()].removeCar();
 }
 
 

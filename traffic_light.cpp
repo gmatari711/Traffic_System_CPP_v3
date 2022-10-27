@@ -4,7 +4,7 @@ void TrafficLight::runTrafficLight()
 {
 	while (true)
 	{
-
+		Sleep(20000);
 		switch (this->m_current_exit)
 		{
 		case Exit::up:
@@ -20,7 +20,6 @@ void TrafficLight::runTrafficLight()
 			this->m_current_exit = Exit::up;
 			break;
 		}
-		Sleep(20000);
 
 	}
 }

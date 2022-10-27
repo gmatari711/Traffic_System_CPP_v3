@@ -26,7 +26,7 @@ LicensePlate::LicensePlate()
     licensePlateGenerator(*this);
 }
 
-std::mutex Car::car_mutex;
+std::mutex TrafficRoads::roads_mutex;
 
 std::ostream &Car::print(std::ostream &os) const
 {
@@ -65,9 +65,10 @@ void Car::drive()
 {
     while (!m_roads.isOutOfRoad(*this))
     {
-        car_mutex.lock();
+        this->m_roads.roads_mutex.lock();
         if (m_roads.isMovementPossible(*this))
         {
+            this->m_roads.removeCarFromRoadMap(*this);
             switch (this->m_drive_direction)
             {
             case DriveDirection::up:
@@ -83,8 +84,9 @@ void Car::drive()
                 this->setX(this->getX() + 1);
                 break;
             }
+            this->m_roads.updateCarPosOnRoadMap(*this);
         }
-        car_mutex.unlock();
+        this->m_roads.roads_mutex.unlock();
         Sleep(1000);
     }
 }

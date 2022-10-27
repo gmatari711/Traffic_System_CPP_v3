@@ -22,9 +22,10 @@ public:
     const Car *getCar()const;
     const Car *removeCar();
     bool isEmptyCell()const;
-    bool isHorizontalStreet();
-    bool isVerticalStreet();
-    bool isJunction();
+    bool isHorizontalStreet()const;
+    bool isVerticalStreet()const;
+    bool isJunction()const;
+    void addTrafficLight();
     const TrafficLight* getTrafficLight() const;
     bool hasCar()const{return this->m_car != nullptr;}
 };

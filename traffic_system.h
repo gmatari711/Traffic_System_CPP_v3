@@ -200,6 +200,10 @@ private:
 
     bool isOutOfRoad(const Car& a_car)const;
 
+    void updateCarPosOnRoadMap(const Car& a_car);
+
+    void removeCarFromRoadMap(const Car& a_car);
+
 public:
     explicit TrafficSystem(const char *a_filename);
     ~TrafficSystem();

@@ -9,10 +9,13 @@
 
 class TrafficRoads
 {
-private:
+protected:
     friend class Car;
+    static std::mutex roads_mutex;
     virtual bool isMovementPossible(const Car& a_car) const = 0;
     virtual bool isOutOfRoad(const Car& a_car)const = 0;
+    virtual void removeCarFromRoadMap(const Car& a_car) = 0;
+    virtual void updateCarPosOnRoadMap(const Car& a_car) = 0;
 };
 
 
@@ -37,7 +40,6 @@ enum class DriveDirection{left , up , right , down};
 class Car
 {
 private:
-    static std::mutex car_mutex;
     LicensePlate m_license_plate;
     Coordinate m_coordinate;
     DriveDirection m_drive_direction;
