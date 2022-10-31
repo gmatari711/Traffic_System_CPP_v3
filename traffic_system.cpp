@@ -188,7 +188,7 @@ void TrafficSystem::printTopJunction(int a_x_coord, int a_y_coord)const
     if(isValidExit(a_x_coord,a_y_coord, Exit::up))
     {
         std::cout<<" ";
-        printTrafficLight(false);
+        printTrafficLight(this->m_traffic_table[a_y_coord][a_x_coord].getTrafficLight()->getTrafficLightStatus(Exit::up));
         std::cout<<" ";
     }
     else
@@ -201,7 +201,7 @@ void TrafficSystem::printMiddleJunction(int a_x_coord, int a_y_coord)const
 {
     if(isValidExit(a_x_coord,a_y_coord,Exit::left))
     {
-        printTrafficLight(false);
+        printTrafficLight(this->m_traffic_table[a_y_coord][a_x_coord].getTrafficLight()->getTrafficLightStatus(Exit::left));
     }
     else
     {
@@ -210,7 +210,7 @@ void TrafficSystem::printMiddleJunction(int a_x_coord, int a_y_coord)const
     std::cout<<"+";
     if(isValidExit(a_x_coord,a_y_coord,Exit::right))
     {
-        printTrafficLight(false);
+        printTrafficLight(this->m_traffic_table[a_y_coord][a_x_coord].getTrafficLight()->getTrafficLightStatus(Exit::right));
     }
     else
     {
@@ -223,7 +223,7 @@ void TrafficSystem::printBottomJunction(int a_x_coord, int a_y_coord)const
     if(isValidExit(a_x_coord,a_y_coord,Exit::down))
     {
         std::cout<<" ";
-        printTrafficLight(false);
+        printTrafficLight(this->m_traffic_table[a_y_coord][a_x_coord].getTrafficLight()->getTrafficLightStatus(Exit::down));
         std::cout<<" ";
     }
     else
@@ -412,7 +412,7 @@ bool TrafficSystem::isMovementPossible(const Car &a_car) const
 
 bool TrafficSystem::canMoveLeft(const Car &a_car) const
 {
-    bool result = false;
+    bool result = true;
 
     if(a_car.getX() > 0)
     {
@@ -434,7 +434,7 @@ bool TrafficSystem::canMoveLeft(const Car &a_car) const
 
 bool TrafficSystem::canMoveRight(const Car &a_car) const
 {
-    bool result = false;
+    bool result = true;
 
     if(a_car.getX() + 1< this->m_width)
     {
@@ -456,7 +456,7 @@ bool TrafficSystem::canMoveRight(const Car &a_car) const
 
 bool TrafficSystem::canMoveUp(const Car &a_car) const
 {
-    bool result = false;
+    bool result = true;
 
     if(a_car.getY() > 0 )
     {
@@ -478,7 +478,7 @@ bool TrafficSystem::canMoveUp(const Car &a_car) const
 
 bool TrafficSystem::canMoveDown(const Car &a_car) const
 {
-    bool result = false;
+    bool result = true;
 
     if(a_car.getY() + 1 < this->m_length )
     {
@@ -570,12 +570,21 @@ bool TrafficSystem::isOutOfRoad(const Car& a_car) const
 
 void TrafficSystem::updateCarPosOnRoadMap(const Car& a_car)
 {
-    this->m_traffic_table[a_car.getY()][a_car.getX()].setCar(&a_car);
+    if (this->isCarInBound(a_car))
+    {
+        this->m_traffic_table[a_car.getY()][a_car.getX()].setCar(&a_car);
+    }
 }
 
 void TrafficSystem::removeCarFromRoadMap(const Car& a_car)
 {
     this->m_traffic_table[a_car.getY()][a_car.getX()].removeCar();
+}
+
+bool TrafficSystem::isCarInBound(const Car& a_car) const
+{
+    return a_car.getX() >= 0 && a_car.getY() >= 0
+        && a_car.getX() < this->m_width && a_car.getY() < this->m_length;
 }
 
 

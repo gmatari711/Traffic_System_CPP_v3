@@ -204,6 +204,8 @@ private:
 
     void removeCarFromRoadMap(const Car& a_car);
 
+    bool isCarInBound(const Car& a_car)const;
+
 public:
     explicit TrafficSystem(const char *a_filename);
     ~TrafficSystem();

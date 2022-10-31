@@ -6,15 +6,36 @@
 #include <mutex>
 #include "coordinate.h"
 
-
+/**
+ * TrafficRoads is an abstract class to serve as an interface for all traffic system classes who want
+ * to use Car class.
+ */
 class TrafficRoads
 {
 protected:
     friend class Car;
     static std::mutex roads_mutex;
+    /**
+     * Test if a certain can move according to its movement direction.
+     * @param a_car A reference to a Car object.
+     * @return True if Car movement is allowed. False otherwise.
+     */
     virtual bool isMovementPossible(const Car& a_car) const = 0;
+    /**
+     * Check if a given Car object is within road bounds.
+     * @param a_car A reference to a Car object.
+     * @return True if Car is out of road bound. False otherwise.
+     */
     virtual bool isOutOfRoad(const Car& a_car)const = 0;
+    /**
+     * Removes a given Car object from road system.
+     * @param a_car A reference to a Car object. 
+     */
     virtual void removeCarFromRoadMap(const Car& a_car) = 0;
+    /**
+     * Sets a given Car object from road system.
+     * @param a_car A reference to a Car object.
+     */
     virtual void updateCarPosOnRoadMap(const Car& a_car) = 0;
 };
 
@@ -24,10 +45,10 @@ class LicensePlate
 private:
     /**
      * Generating a new license plate value to be set to a_license_plate.
-     * @param a_license_plate
+     * @param a_license_plate A LicensePlate object reference.
      */
     static void licensePlateGenerator(LicensePlate &a_license_plate);
-
+    /** License plate is represented by an alphabetic character. */
     char m_license_plate;
     std::ostream &print(std::ostream &os)const;
 public:
@@ -46,11 +67,6 @@ private:
     TrafficRoads &m_roads;
     std::thread m_car_thread;
     
-    /**
-     *
-     * @param os
-     * @return
-     */
     std::ostream &print(std::ostream &os)const;
 public:
     Car(TrafficRoads& a_tr, int a_x_coord, int a_y_coord, DriveDirection a_direction);

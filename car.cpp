@@ -6,7 +6,8 @@
 void LicensePlate::licensePlateGenerator(LicensePlate &a_license_plate)
 {
     static char generator = 'a';
-    a_license_plate.m_license_plate = generator++;
+    a_license_plate.m_license_plate = generator;
+    generator = (generator == 'z') ? 'a' : generator + 1;
     //Handle limits.
 }
 
