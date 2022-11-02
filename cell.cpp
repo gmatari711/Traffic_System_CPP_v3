@@ -59,12 +59,12 @@ bool Cell::isJunction()const
     return this->m_vertical && this->m_horizontal;
 }
 
-void Cell::addTrafficLight()
+void Cell::addTrafficLights()
 {
-    this->m_traffic_light = new TrafficLight();
+    this->m_traffic_light = new TrafficLights();
 }
 
-const TrafficLight* Cell::getTrafficLight() const
+const TrafficLights* Cell::getTrafficLights() const
 {
     return this->m_traffic_light;
 }

@@ -1,17 +1,2 @@
-﻿  car.cpp
-C:\My Projects\Traffic_System_CPP_v3\coordinate.h(33,41): warning C4244: 'return': conversion from 'const double' to 'int', possible loss of data
-C:\My Projects\Traffic_System_CPP_v3\coordinate.h(38,41): warning C4244: 'return': conversion from 'const double' to 'int', possible loss of data
-  cell.cpp
-C:\My Projects\Traffic_System_CPP_v3\coordinate.h(33,41): warning C4244: 'return': conversion from 'const double' to 'int', possible loss of data
-C:\My Projects\Traffic_System_CPP_v3\coordinate.h(38,41): warning C4244: 'return': conversion from 'const double' to 'int', possible loss of data
-  main.cpp
-C:\My Projects\Traffic_System_CPP_v3\coordinate.h(33,41): warning C4244: 'return': conversion from 'const double' to 'int', possible loss of data
-C:\My Projects\Traffic_System_CPP_v3\coordinate.h(38,41): warning C4244: 'return': conversion from 'const double' to 'int', possible loss of data
-  traffic_system.cpp
-C:\My Projects\Traffic_System_CPP_v3\coordinate.h(33,41): warning C4244: 'return': conversion from 'const double' to 'int', possible loss of data
-C:\My Projects\Traffic_System_CPP_v3\coordinate.h(38,41): warning C4244: 'return': conversion from 'const double' to 'int', possible loss of data
-C:\My Projects\Traffic_System_CPP_v3\traffic_system.cpp(119,37): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
-C:\My Projects\Traffic_System_CPP_v3\traffic_system.cpp(143,42): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
-C:\My Projects\Traffic_System_CPP_v3\traffic_system.cpp(168,41): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
-  Generating Code...
+﻿  traffic_light.cpp
   Traffic_System_CPP_v3.vcxproj -> C:\My Projects\Traffic_System_CPP_v3\x64\Debug\Traffic_System_CPP_v3.exe

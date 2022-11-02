@@ -12,7 +12,7 @@ private:
     const Street *m_vertical{nullptr};
     const Street *m_horizontal{nullptr};
     const Car *m_car{nullptr};
-    TrafficLight* m_traffic_light{ nullptr };
+    TrafficLights* m_traffic_light{ nullptr };
 public:
     const Street *getVerticalStreet()const;
     const Street *getHorizontalStreet()const;
@@ -25,9 +25,11 @@ public:
     bool isHorizontalStreet()const;
     bool isVerticalStreet()const;
     bool isJunction()const;
-    void addTrafficLight();
-    const TrafficLight* getTrafficLight() const;
+    void addTrafficLights();
+    const TrafficLights* getTrafficLights() const;
     bool hasCar()const{return this->m_car != nullptr;}
+    inline void insertExit(Exit a_exit) { this->m_traffic_light->insertExit(a_exit);}
+    inline void activateTrafficLights() { this->m_traffic_light->turnOnTrafficLights(); }
 };
 
 

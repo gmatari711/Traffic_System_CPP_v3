@@ -32,6 +32,7 @@ private:
     size_t m_length{};
     //Container - Street key attached to its relevant initial Coordinate.
     std::multiset<Street> m_streets;
+    std::set<Coordinate> m_junctions;
     std::list<Car *> m_cars; //May change to vector.
 
     /**
@@ -95,7 +96,7 @@ private:
      * Print the relevant traffic light color. Green if true, red otherwise.
      * @param a_status A boolean value representing traffic light color.
      */
-    void printTrafficLight(bool a_status)const;
+    void printTrafficLights(bool a_status)const;
     /**
      * Print the top part of the junction.If top exit exists - a traffic light is
      * marked with its' current color (green if passage is open red if closed).
@@ -197,14 +198,41 @@ private:
      * @param a_street
      */
     void setCarOnStreet(Car *a_car,const Street &a_street);
-
+    /**
+     *
+     * @param
+     * @param
+     * @return
+     */
     bool isOutOfRoad(const Car& a_car)const;
-
+    /**
+     *
+     * @param
+     * @param
+     * @return
+     */
     void updateCarPosOnRoadMap(const Car& a_car);
-
+    /**
+     *
+     * @param
+     * @param
+     * @return
+     */
     void removeCarFromRoadMap(const Car& a_car);
-
+    /**
+     *
+     * @param
+     * @param
+     * @return
+     */
     bool isCarInBound(const Car& a_car)const;
+    /**
+    *
+    * @param
+    * @param
+    * @return
+    */
+    void insertTrafficLights(int a_x_coord, int a_y_coord);
 
 public:
     explicit TrafficSystem(const char *a_filename);

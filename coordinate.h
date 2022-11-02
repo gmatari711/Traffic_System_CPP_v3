@@ -5,8 +5,8 @@
 
 class Coordinate{
 private:
-    double m_x_axis;
-    double m_y_axis;
+    int m_x_axis;
+    int m_y_axis;
     /**
      *
      * @param val

@@ -4,19 +4,23 @@
 #include<Windows.h>
 #include <thread>
 #include <mutex>
+#include <queue>
 
 
 enum class Exit { left, up, right, down};
 
-class TrafficLight
+class TrafficLights
 {
 private:
 	std::thread m_traffic_light_thread;
 	Exit m_current_exit;
-	void runTrafficLight();
+	std::queue<Exit> m_exit_queue{};
+	void runTrafficLights();
 public:
-	TrafficLight();
-	bool getTrafficLightStatus(Exit a_exit)const;
+	TrafficLights();
+	void insertExit(Exit a_exit);
+	void turnOnTrafficLights();
+	bool getTrafficLightsStatus(Exit a_exit)const;
 	Exit getActiveExit()const;
 
 };

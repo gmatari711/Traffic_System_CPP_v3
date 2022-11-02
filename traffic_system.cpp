@@ -33,6 +33,12 @@ TrafficSystem::TrafficSystem(const char *a_filename)
             this->setVerticalStreetToTable(curr->getX(),curr->getY(),curr);
         }
     }
+    for (auto &coord : this->m_junctions)
+    {
+        this->m_traffic_table[coord.getY()][coord.getX()].addTrafficLights();
+        this->insertTrafficLights(coord.getX(), coord.getY());
+        this->m_traffic_table[coord.getY()][coord.getX()].activateTrafficLights();
+    }
 }
 
 void TrafficSystem::createTables()
@@ -70,7 +76,7 @@ void TrafficSystem::setHorizontalStreetToTable(int a_x_coord, int a_y_coord, con
         this->m_traffic_table[a_y_coord][i].setHorizontalStreet(a_street);
         if (this->m_traffic_table[a_y_coord][i].isJunction())
         {
-            this->m_traffic_table[a_y_coord][i].addTrafficLight();
+            this->m_junctions.insert(Coordinate(i, a_y_coord));
         }
     }
 }
@@ -82,7 +88,7 @@ void TrafficSystem::setVerticalStreetToTable(int a_x_coord, int a_y_coord, const
         this->m_traffic_table[i][a_x_coord].setVerticalStreet(a_street);
         if (this->m_traffic_table[i][a_x_coord].isJunction())
         {
-            this->m_traffic_table[i][a_x_coord].addTrafficLight();
+            this->m_junctions.insert(Coordinate(a_x_coord, i));
         }
     }
 
@@ -188,7 +194,7 @@ void TrafficSystem::printTopJunction(int a_x_coord, int a_y_coord)const
     if(isValidExit(a_x_coord,a_y_coord, Exit::up))
     {
         std::cout<<" ";
-        printTrafficLight(this->m_traffic_table[a_y_coord][a_x_coord].getTrafficLight()->getTrafficLightStatus(Exit::up));
+        printTrafficLights(this->m_traffic_table[a_y_coord][a_x_coord].getTrafficLights()->getTrafficLightsStatus(Exit::up));
         std::cout<<" ";
     }
     else
@@ -201,7 +207,7 @@ void TrafficSystem::printMiddleJunction(int a_x_coord, int a_y_coord)const
 {
     if(isValidExit(a_x_coord,a_y_coord,Exit::left))
     {
-        printTrafficLight(this->m_traffic_table[a_y_coord][a_x_coord].getTrafficLight()->getTrafficLightStatus(Exit::left));
+        printTrafficLights(this->m_traffic_table[a_y_coord][a_x_coord].getTrafficLights()->getTrafficLightsStatus(Exit::left));
     }
     else
     {
@@ -210,7 +216,7 @@ void TrafficSystem::printMiddleJunction(int a_x_coord, int a_y_coord)const
     std::cout<<"+";
     if(isValidExit(a_x_coord,a_y_coord,Exit::right))
     {
-        printTrafficLight(this->m_traffic_table[a_y_coord][a_x_coord].getTrafficLight()->getTrafficLightStatus(Exit::right));
+        printTrafficLights(this->m_traffic_table[a_y_coord][a_x_coord].getTrafficLights()->getTrafficLightsStatus(Exit::right));
     }
     else
     {
@@ -223,7 +229,7 @@ void TrafficSystem::printBottomJunction(int a_x_coord, int a_y_coord)const
     if(isValidExit(a_x_coord,a_y_coord,Exit::down))
     {
         std::cout<<" ";
-        printTrafficLight(this->m_traffic_table[a_y_coord][a_x_coord].getTrafficLight()->getTrafficLightStatus(Exit::down));
+        printTrafficLights(this->m_traffic_table[a_y_coord][a_x_coord].getTrafficLights()->getTrafficLightsStatus(Exit::down));
         std::cout<<" ";
     }
     else
@@ -250,7 +256,7 @@ void TrafficSystem::showTrafficSystem()
 
 }
 
-void TrafficSystem::printTrafficLight(bool a_status)const
+void TrafficSystem::printTrafficLights(bool a_status)const
 {
     //Set light color
     int light_color = (a_status)?BACKGROUND_GREEN:BACKGROUND_RED;
@@ -425,7 +431,7 @@ bool TrafficSystem::canMoveLeft(const Car &a_car) const
         }
         else
         {
-            result = this->m_traffic_table[a_car.getY()][a_car.getX() - 1].getTrafficLight()->getTrafficLightStatus(Exit::right);
+            result = this->m_traffic_table[a_car.getY()][a_car.getX() - 1].getTrafficLights()->getTrafficLightsStatus(Exit::right);
         }
     }
 
@@ -447,7 +453,7 @@ bool TrafficSystem::canMoveRight(const Car &a_car) const
         }
         else
         {
-            result = this->m_traffic_table[a_car.getY()][a_car.getX() + 1].getTrafficLight()->getTrafficLightStatus(Exit::left);
+            result = this->m_traffic_table[a_car.getY()][a_car.getX() + 1].getTrafficLights()->getTrafficLightsStatus(Exit::left);
         }
     }
 
@@ -469,7 +475,7 @@ bool TrafficSystem::canMoveUp(const Car &a_car) const
         }
         else
         {
-            result = this->m_traffic_table[a_car.getY() - 1][a_car.getX()].getTrafficLight()->getTrafficLightStatus(Exit::down);
+            result = this->m_traffic_table[a_car.getY() - 1][a_car.getX()].getTrafficLights()->getTrafficLightsStatus(Exit::down);
         }
     }
 
@@ -491,7 +497,7 @@ bool TrafficSystem::canMoveDown(const Car &a_car) const
         }
         else
         {
-            result = this->m_traffic_table[a_car.getY() + 1][a_car.getX()].getTrafficLight()->getTrafficLightStatus(Exit::up);
+            result = this->m_traffic_table[a_car.getY() + 1][a_car.getX()].getTrafficLights()->getTrafficLightsStatus(Exit::up);
         }
     }
 
@@ -585,6 +591,38 @@ bool TrafficSystem::isCarInBound(const Car& a_car) const
 {
     return a_car.getX() >= 0 && a_car.getY() >= 0
         && a_car.getX() < this->m_width && a_car.getY() < this->m_length;
+}
+
+void TrafficSystem::insertTrafficLights(int a_x_coord, int a_y_coord)
+{
+    if (a_y_coord > 0)
+    {
+        if (this->m_traffic_table[a_y_coord - 1][a_x_coord].isVerticalStreet())
+        {
+            this->m_traffic_table[a_y_coord][a_x_coord].insertExit(Exit::up);
+        }
+    }
+    if (a_x_coord > 0)
+    {
+        if (this->m_traffic_table[a_y_coord][a_x_coord - 1].isHorizontalStreet())
+        {
+            this->m_traffic_table[a_y_coord][a_x_coord].insertExit(Exit::left);
+        }
+    }
+    if (a_y_coord + 1 < this->m_length)
+    {
+        if (this->m_traffic_table[a_y_coord + 1 ][a_x_coord].isVerticalStreet())
+        {
+            this->m_traffic_table[a_y_coord][a_x_coord].insertExit(Exit::down);
+        }
+    }
+    if (a_x_coord + 1 < this->m_width)
+    {
+        if (this->m_traffic_table[a_y_coord][a_x_coord + 1].isHorizontalStreet())
+        {
+            this->m_traffic_table[a_y_coord][a_x_coord].insertExit(Exit::right);
+        }
+    }
 }
 
 
