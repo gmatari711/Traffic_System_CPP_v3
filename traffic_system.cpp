@@ -3,6 +3,8 @@
 #include <fstream>
 #include <cstdlib>
 
+
+// TO-DO:  Create enum class and set all information in a lookup table.
 const char *TrafficSystem::VERTICAL_STREET_LEFT_BORDER = "|";
 const char *TrafficSystem::VERTICAL_STREET_MIDDLE = " ";
 const char *TrafficSystem::VERTICAL_STREET_RIGHT_BORDER = "|";
@@ -18,12 +20,12 @@ TrafficSystem::TrafficSystem(const char *a_filename)
     std::ifstream input(a_filename);
 
     input>>this->m_length>>this->m_width;
-    //Create table.
+    
     createTables();
     while(!input.eof())
     {
-        const Street *curr{nullptr};
-        curr = &(*this->m_streets.insert(Street(input)));
+        Street *curr = new Street(input);
+        (*this->m_streets.insert(*curr));
         if(curr->getStreetDirection() == Direction::horizontal)
         {
             this->setHorizontalStreetToTable(curr->getX(),curr->getY(),curr);
@@ -35,7 +37,8 @@ TrafficSystem::TrafficSystem(const char *a_filename)
     }
     for (auto &coord : this->m_junctions)
     {
-        this->m_traffic_table[coord.getY()][coord.getX()].addTrafficLights();
+        //TO-DO: change name of createTrafficLights to createTrafficLights.
+        this->m_traffic_table[coord.getY()][coord.getX()].createTrafficLights();//CreateTrafficLights() - NOW EMPTY
         this->insertTrafficLights(coord.getX(), coord.getY());
         this->m_traffic_table[coord.getY()][coord.getX()].activateTrafficLights();
     }
@@ -44,11 +47,9 @@ TrafficSystem::TrafficSystem(const char *a_filename)
 void TrafficSystem::createTables()
 {
     this->m_traffic_table = new Cell*[this->m_length];
-    this->m_traffic_lights = new Exit*[this->m_length];
     for(size_t i = 0 ; i < this->m_length ; ++i)
     {
         this->m_traffic_table[i] = new Cell[this->m_width];
-        this->m_traffic_lights[i] = new Exit[this->m_width];
     }
 
 }
@@ -58,10 +59,8 @@ void TrafficSystem::destroyTables()
     for(size_t i = 0 ; i < this->m_length ; ++i)
     {
         delete [] this->m_traffic_table[i];
-        delete [] this->m_traffic_lights[i];
     }
     delete[] this->m_traffic_table;
-    delete [] this->m_traffic_lights;
 }
 
 TrafficSystem::~TrafficSystem()
@@ -69,7 +68,7 @@ TrafficSystem::~TrafficSystem()
     destroyTables();
 }
 
-void TrafficSystem::setHorizontalStreetToTable(int a_x_coord, int a_y_coord, const Street *a_street)
+void TrafficSystem::setHorizontalStreetToTable(int a_x_coord, int a_y_coord, Street *a_street)
 {
     for(size_t i = a_x_coord ; i < a_x_coord + a_street->getStreetLength()/100 ; ++i)
     {
@@ -81,7 +80,7 @@ void TrafficSystem::setHorizontalStreetToTable(int a_x_coord, int a_y_coord, con
     }
 }
 
-void TrafficSystem::setVerticalStreetToTable(int a_x_coord, int a_y_coord, const Street *a_street)
+void TrafficSystem::setVerticalStreetToTable(int a_x_coord, int a_y_coord, Street *a_street)
 {
     for(size_t i = a_y_coord ; i < a_y_coord + a_street->getStreetLength()/100 ; ++i)
     {
@@ -523,7 +522,7 @@ void TrafficSystem::addCars() {
         {
             DriveDirection direction = (s.getStreetDirection() == Direction::vertical) ?
                 DriveDirection::down : DriveDirection::right;
-            car = new Car(*this,s.getX(),s.getY(), direction);
+            car = new Car(*this, s.getX(), s.getY(), direction, const_cast<Street&>(s).getMutex());
         }
     }
 }
@@ -593,8 +592,11 @@ bool TrafficSystem::isCarInBound(const Car& a_car) const
         && a_car.getX() < this->m_width && a_car.getY() < this->m_length;
 }
 
+
+
 void TrafficSystem::insertTrafficLights(int a_x_coord, int a_y_coord)
 {
+    //TO-DO: Merge conditions.
     if (a_y_coord > 0)
     {
         if (this->m_traffic_table[a_y_coord - 1][a_x_coord].isVerticalStreet())

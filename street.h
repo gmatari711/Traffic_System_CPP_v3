@@ -2,7 +2,8 @@
 #define TRAFFIC_SYSTEM_CPP_V2_STREET_H
 
 #include <string>
-#include "windows.h"
+#include <mutex>
+#include <windows.h>
 #include "coordinate.h"
 enum class Direction{ vertical , horizontal};
 
@@ -14,8 +15,9 @@ private:
 
     const int m_street_color;
     const int m_street_id;
-
     const Coordinate m_coordinate;
+
+    std::mutex m_street_mutex;
     std::string m_street_name;
     size_t m_street_length;
     Direction m_street_direction;
@@ -29,8 +31,9 @@ public:
     friend std::ostream &operator<<(std::ostream &a_os,const Street &a_st);
     const Coordinate &getCoordinate()const{return this->m_coordinate;}
     int getX()const {return this->m_coordinate.getX();}
-    int getY()const {return this->m_coordinate.getY();}
+     int getY()const {return this->m_coordinate.getY();}
     explicit Street(std::ifstream &a_input);
+    Street(const Street& rhs);
     /**
      *
      * @return
@@ -77,6 +80,8 @@ public:
     bool operator==(const Street &a_rhs)const;
 
     bool operator==(const int a_rhs)const;
+    
+    inline std::mutex* getMutex() { return &this->m_street_mutex; }
 
 };
 

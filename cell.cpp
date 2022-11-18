@@ -1,15 +1,11 @@
-//
-// Created by gmata on 10/7/2022.
-//
-
 #include "cell.h"
 
-void Cell::setVerticalStreet(const Street *a_street)
+void Cell::setVerticalStreet(Street *a_street)
 {
     this->m_vertical = a_street;
 }
 
-void Cell::setHorizontalStreet(const Street *a_street)
+void Cell::setHorizontalStreet(Street *a_street)
 {
     this->m_horizontal = a_street;
 }
@@ -59,7 +55,7 @@ bool Cell::isJunction()const
     return this->m_vertical && this->m_horizontal;
 }
 
-void Cell::addTrafficLights()
+void Cell::createTrafficLights()
 {
     this->m_traffic_light = new TrafficLights();
 }

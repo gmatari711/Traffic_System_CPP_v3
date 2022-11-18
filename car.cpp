@@ -35,8 +35,8 @@ std::ostream &Car::print(std::ostream &os) const
     return os;
 }
 
-Car::Car(TrafficRoads& a_tr, int a_x_coord, int a_y_coord, DriveDirection a_direction) :
-    m_roads(a_tr),m_coordinate(a_x_coord,a_y_coord),m_drive_direction(a_direction)
+Car::Car(TrafficRoads& a_tr, int a_x_coord, int a_y_coord, DriveDirection a_direction, std::mutex *a_mutex) :
+    m_roads(a_tr),m_coordinate(a_x_coord,a_y_coord),m_drive_direction(a_direction),m_cur_street_mutex(a_mutex)
 {
     this->m_car_thread = std::thread(&Car::drive, this);
 }
@@ -64,9 +64,11 @@ void Car::setY(int a_y_coord) {
 
 void Car::drive()
 {
+    this->m_roads.updateCarPosOnRoadMap(*this);
     while (!m_roads.isOutOfRoad(*this))
     {
-        this->m_roads.roads_mutex.lock();
+        Sleep(1000);
+        this->m_cur_street_mutex->lock();
         if (m_roads.isMovementPossible(*this))
         {
             this->m_roads.removeCarFromRoadMap(*this);
@@ -87,8 +89,7 @@ void Car::drive()
             }
             this->m_roads.updateCarPosOnRoadMap(*this);
         }
-        this->m_roads.roads_mutex.unlock();
-        Sleep(1000);
+        this->m_cur_street_mutex->unlock();
     }
 }
 

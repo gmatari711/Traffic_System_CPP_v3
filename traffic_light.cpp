@@ -11,8 +11,7 @@ void TrafficLights::runTrafficLights()
 	}
 }
 
-TrafficLights::TrafficLights() :
-	m_current_exit(Exit::left)
+TrafficLights::TrafficLights() 
 {}
 
 void TrafficLights::insertExit(Exit a_exit)

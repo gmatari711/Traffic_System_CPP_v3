@@ -52,6 +52,16 @@ m_coordinate(a_input)
     }
 }
 
+Street::Street(const Street& rhs):
+    m_street_color(rhs.m_street_color),
+    m_coordinate(rhs.m_coordinate),
+    m_street_direction(rhs.m_street_direction),
+    m_street_id(rhs.m_street_id),
+    m_street_length(rhs.m_street_length),
+    m_street_name(rhs.m_street_name)
+{
+}
+
 
 
 

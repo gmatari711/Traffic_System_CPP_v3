@@ -12,6 +12,7 @@
 class TrafficSystem : public TrafficRoads
 {
 private:
+    //Printing constants.
     static const char *VERTICAL_STREET_LEFT_BORDER;
     static const char *VERTICAL_STREET_MIDDLE;
     static const char *VERTICAL_STREET_RIGHT_BORDER;
@@ -24,8 +25,7 @@ private:
 
     //Street table - Each cell holds two pointers to street
     Cell **m_traffic_table{nullptr};
-
-    Exit **m_traffic_lights{nullptr};
+    
     //Value - Traffic System width.
     size_t m_width{};
     //Value - Traffic System Length.
@@ -45,14 +45,14 @@ private:
      * @param a_y_coord
      * @param a_street
      */
-    void setHorizontalStreetToTable(int a_x_coord, int a_y_coord, const Street *a_street);
+    void setHorizontalStreetToTable(int a_x_coord, int a_y_coord, Street *a_street);
     /**
      *
      * @param a_x_coord
      * @param a_y_coord
      * @param a_street
      */
-    void setVerticalStreetToTable(int a_x_coord, int a_y_coord, const Street *a_street);
+    void setVerticalStreetToTable(int a_x_coord, int a_y_coord, Street *a_street);
     /**
      *
      * @param a_cell

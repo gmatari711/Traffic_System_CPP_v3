@@ -6,6 +6,7 @@
 #include <mutex>
 #include "coordinate.h"
 
+//Car size, trucks - add factory.
 /**
  * TrafficRoads is an abstract class to serve as an interface for all traffic system classes who want
  * to use Car class.
@@ -14,7 +15,6 @@ class TrafficRoads
 {
 protected:
     friend class Car;
-    static std::mutex roads_mutex;
     /**
      * Test if a certain can move according to its movement direction.
      * @param a_car A reference to a Car object.
@@ -66,10 +66,11 @@ private:
     DriveDirection m_drive_direction;
     TrafficRoads &m_roads;
     std::thread m_car_thread;
+    std::mutex* m_cur_street_mutex{ nullptr };
     
     std::ostream &print(std::ostream &os)const;
 public:
-    Car(TrafficRoads& a_tr, int a_x_coord, int a_y_coord, DriveDirection a_direction);
+    Car(TrafficRoads& a_tr, int a_x_coord, int a_y_coord, DriveDirection a_direction, std::mutex* a_mutex);
     friend std::ostream &operator<<(std::ostream &os, const Car &rhs);
     int getX()const;
     int getY()const;
